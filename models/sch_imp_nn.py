@@ -128,11 +128,17 @@ def build_model():
         # create the model
         model = Sequential()
 
-        # add the first hidden layer with 64 neurons, relu activation
-        model.add(Dense(64, activation='relu', input_dim=22))
+        # add the first hidden layer with 32 neurons, relu activation
+        model.add(Dense(32, activation='relu', input_dim=22))
 
         # add the second hidden layer with 64 neurons, relu activation
         model.add(Dense(64, activation='relu'))
+
+        # add the third hidden layer with 64 neurons, relu activation
+        model.add(Dense(64, activation='relu'))
+
+        # add the fourth hidden layer with 32 neurons, relu activation
+        model.add(Dense(32, activation='relu'))
 
         # add the single output layer
         model.add(Dense(1))
