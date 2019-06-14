@@ -2,20 +2,18 @@
 # file, You can obtain one at
 # https://github.com/akhilpandey95/scholarlyimpact/blob/master/LICENSE.
 
-import plaidml.keras
-plaidml.keras.install_backend()
-
-import sys
-import keras
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-from keras.layers import Dense
+import tensorflow as tf
 from collections import Counter
-from keras.models import Sequential
-from sklearn.metrics import r2_score
+import tensorflow.keras as keras
+from tensorflow.keras import backend as K
+from tensorflow.keras.models import Sequential
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score, mean_squared_error
+from tensorflow.keras.layers import Dense, Dropout, Flatten
 
 # function for processing the dataset
 def data_processing(file_path):
@@ -137,7 +135,10 @@ def build_model():
         # add the third hidden layer with 64 neurons, relu activation
         model.add(Dense(64, activation='relu'))
 
-        # add the fourth hidden layer with 32 neurons, relu activation
+        # add the fourth hidden layer with 64 neurons, relu activation
+        model.add(Dense(64, activation='relu'))
+
+        # add the fifth hidden layer with 32 neurons, relu activation
         model.add(Dense(32, activation='relu'))
 
         # add the single output layer
