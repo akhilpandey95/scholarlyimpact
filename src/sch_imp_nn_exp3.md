@@ -54,17 +54,7 @@ regressor.summary()
     Non-trainable params: 0
     _________________________________________________________________
 
-
-
 ```python
-# use the rmsprop optimizer
-rms = keras.optimizers.RMSprop(lr=0.001)
-
-# prepare for early stopping
-early_stopping = keras.callbacks.EarlyStopping(monitor='mean_squared_error', min_delta=0,
-                                         patience=40, verbose=0, mode='auto',
-                                         baseline=None, restore_best_weights=False)
-
 # compile the model
 regressor.compile(optimizer=rms, loss='mean_squared_error',
                    metrics =['mean_absolute_error', 'mean_squared_error'])
@@ -146,24 +136,11 @@ regressor.summary()
     Non-trainable params: 0
     _________________________________________________________________
 
-
-
 ```python
-# use the rmsprop optimizer
-rms = keras.optimizers.RMSprop(lr=0.001)
-sgd = keras.optimizers.SGD(lr=0.01, momentum=0.0, decay=0.0, nesterov=False)
-nesterov = keras.optimizers.SGD(lr=0.001, momentum=0.0, decay=0.0, nesterov=True)
-
-# prepare for early stopping
-early_stopping = keras.callbacks.EarlyStopping(monitor='mean_squared_error', min_delta=0,
-                                         patience=40, verbose=0, mode='auto',
-                                         baseline=None, restore_best_weights=False)
-
 # compile the model
 regressor.compile(optimizer=rms, loss='mean_squared_error',
                    metrics =['mean_absolute_error', 'mean_squared_error'])
 ```
-
 
 ```python
 regressor.fit(X_train, Y_train, epochs=50,
@@ -196,3 +173,95 @@ regressor.fit(X_train, Y_train, epochs=50,
     Test MSE: 1.4794692387027495
 
     R-squared value: 0.4580961781182158
+
+### Run 3 with arch: [22, 32, 64, 64, 64, 32, 1]
+```python
+regressor = Sequential()
+
+regressor.add(Dense(32, activation='relu', input_dim=22))
+
+regressor.add(Dense(64, activation='relu'))
+
+regressor.add(Dense(64, activation='relu'))
+
+regressor.add(Dense(64, activation='relu'))
+
+regressor.add(Dense(32, activation='relu'))
+
+regressor.add(Dense(1))
+```
+    /GPU:0 - NVIDIA Corporation GK210GL [Tesla K80]
+
+```python
+regressor.summary()
+```
+
+    Model: "sequential_3"
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    dense_17 (Dense)             (None, 32)                736       
+    _________________________________________________________________
+    dense_18 (Dense)             (None, 64)                2112      
+    _________________________________________________________________
+    dense_19 (Dense)             (None, 64)                4160      
+    _________________________________________________________________
+    dense_20 (Dense)             (None, 64)                4160      
+    _________________________________________________________________
+    dense_21 (Dense)             (None, 32)                2080      
+    _________________________________________________________________
+    dense_22 (Dense)             (None, 1)                 33        
+    =================================================================
+    Total params: 13,281
+    Trainable params: 13,281
+    Non-trainable params: 0
+    _________________________________________________________________
+
+
+
+```python
+# compile the model
+regressor.compile(optimizer=rms, loss='mean_squared_error',
+                   metrics =['mean_absolute_error', 'mean_squared_error'])
+```
+
+
+```python
+regressor.fit(X_train, Y_train, epochs=500, validation_split=0.2)
+```
+
+    Train on 73216 samples, validate on 18305 samples
+    Epoch 1/500
+    73216/73216 [==============================] - 5s 72us/sample - loss: 82631.6743 - mean_absolute_error: 21.8541 - mean_squared_error: 82631.0859 - val_loss: 37.4663 - val_mean_absolute_error: 1.6977 - val_mean_squared_error: 37.4663
+    Epoch 2/500
+    73216/73216 [==============================] - 5s 69us/sample - loss: 15537.8614 - mean_absolute_error: 11.3774 - mean_squared_error: 15537.8564 - val_loss: 6006.3956 - val_mean_absolute_error: 8.2804 - val_mean_squared_error: 6006.3979
+    Epoch 3/500
+    73216/73216 [==============================] - 5s 67us/sample - loss: 8787.8236 - mean_absolute_error: 7.5955 - mean_squared_error: 8787.8213 - val_loss: 17419.2455 - val_mean_absolute_error: 14.2364 - val_mean_squared_error: 17419.2461
+    Epoch 4/500
+    73216/73216 [==============================] - 5s 68us/sample - loss: 6664.4345 - mean_absolute_error: 6.2893 - mean_squared_error: 6664.4321 - val_loss: 11492.3081 - val_mean_absolute_error: 11.3387 - val_mean_squared_error: 11492.2998
+    Epoch 5/500
+    73216/73216 [==============================] - 5s 69us/sample - loss: 2706.5453 - mean_absolute_error: 4.7715 - mean_squared_error: 2706.5427 - val_loss: 6.2631 - val_mean_absolute_error: 1.1762 - val_mean_squared_error: 6.2631
+    Epoch 50/500
+    73216/73216 [==============================] - 5s 68us/sample - loss: 1.7080 - mean_absolute_error: 0.9173 - mean_squared_error: 1.7080 - val_loss: 1.8886 - val_mean_absolute_error: 0.9192 - val_mean_squared_error: 1.8886
+    Epoch 100/500
+    73216/73216 [==============================] - 5s 66us/sample - loss: 1.6543 - mean_absolute_error: 0.9233 - mean_squared_error: 1.6543 - val_loss: 1.5451 - val_mean_absolute_error: 0.9456 - val_mean_squared_error: 1.5451
+    Epoch 200/500
+    73216/73216 [==============================] - 5s 67us/sample - loss: 1.3497 - mean_absolute_error: 0.8743 - mean_squared_error: 1.3497 - val_loss: 1.3646 - val_mean_absolute_error: 0.8906 - val_mean_squared_error: 1.3646
+    Epoch 300/500
+    73216/73216 [==============================] - 5s 67us/sample - loss: 1.3755 - mean_absolute_error: 0.8867 - mean_squared_error: 1.3755 - val_loss: 1.3364 - val_mean_absolute_error: 0.8615 - val_mean_squared_error: 1.3364
+    Epoch 400/500
+    73216/73216 [==============================] - 5s 68us/sample - loss: 1.4052 - mean_absolute_error: 0.8894 - mean_squared_error: 1.4052 - val_loss: 1.4551 - val_mean_absolute_error: 0.8892 - val_mean_squared_error: 1.4551
+    Epoch 500/500
+    73216/73216 [==============================] - 5s 70us/sample - loss: 2.2173 - mean_absolute_error: 0.8802 - mean_squared_error: 2.2173 - val_loss: 1.3030 - val_mean_absolute_error: 0.8503 - val_mean_squared_error: 1.3030
+
+    91521/91521 [==============================] - 3s 29us/sample - loss: 1.2819 - mean_absolute_error: 0.8452 - mean_squared_error: 1.2819
+    Training Loss: 1.2818819236931775
+    Training MAE: 0.84515953
+    Training MSE: 1.2818828
+
+    39224/39224 [==============================] - 1s 28us/sample - loss: 1.3134 - mean_absolute_error: 0.8548 - mean_squared_error: 1.3134
+    Test Loss: 1.313426486112963
+    Test MAE: 0.85482204
+    Test MSE: 1.3134267
+
+    R-squared value: 0.51397
