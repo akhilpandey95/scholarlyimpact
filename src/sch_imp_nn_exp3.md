@@ -229,7 +229,6 @@ regressor.compile(optimizer=rms, loss='mean_squared_error',
 ```python
 regressor.fit(X_train, Y_train, epochs=500, validation_split=0.2)
 ```
-
     Train on 73216 samples, validate on 18305 samples
     Epoch 1/500
     73216/73216 [==============================] - 5s 72us/sample - loss: 82631.6743 - mean_absolute_error: 21.8541 - mean_squared_error: 82631.0859 - val_loss: 37.4663 - val_mean_absolute_error: 1.6977 - val_mean_squared_error: 37.4663
@@ -254,10 +253,12 @@ regressor.fit(X_train, Y_train, epochs=500, validation_split=0.2)
     Epoch 500/500
     73216/73216 [==============================] - 5s 70us/sample - loss: 2.2173 - mean_absolute_error: 0.8802 - mean_squared_error: 2.2173 - val_loss: 1.3030 - val_mean_absolute_error: 0.8503 - val_mean_squared_error: 1.3030
 
+
     91521/91521 [==============================] - 3s 29us/sample - loss: 1.2819 - mean_absolute_error: 0.8452 - mean_squared_error: 1.2819
     Training Loss: 1.2818819236931775
     Training MAE: 0.84515953
     Training MSE: 1.2818828
+
 
     39224/39224 [==============================] - 1s 28us/sample - loss: 1.3134 - mean_absolute_error: 0.8548 - mean_squared_error: 1.3134
     Test Loss: 1.313426486112963
@@ -265,3 +266,101 @@ regressor.fit(X_train, Y_train, epochs=500, validation_split=0.2)
     Test MSE: 1.3134267
 
     R-squared value: 0.51397
+
+### Run 4 with arch: [22, 32, 64, 64, 128, 64, 64 32, 1]
+```python
+regressor = Sequential()
+
+regressor.add(Dense(32, activation='relu', input_dim=22))
+
+regressor.add(Dense(64, activation='relu'))
+
+regressor.add(Dense(64, activation='relu'))
+
+regressor.add(Dense(128, activation='relu'))
+
+regressor.add(Dense(64, activation='relu'))
+
+regressor.add(Dense(64, activation='relu'))
+
+regressor.add(Dense(32, activation='relu'))
+
+regressor.add(Dense(1))
+```
+    /GPU:0 - NVIDIA Corporation GK210GL [Tesla K80]
+
+```python
+regressor.summary()
+```
+
+    Model: "sequential"
+    _________________________________________________________________
+    Layer (type)                 Output Shape              Param #   
+    =================================================================
+    dense (Dense)                (None, 32)                736       
+    _________________________________________________________________
+    dense_1 (Dense)              (None, 64)                2112      
+    _________________________________________________________________
+    dense_2 (Dense)              (None, 64)                4160      
+    _________________________________________________________________
+    dense_3 (Dense)              (None, 128)               8320      
+    _________________________________________________________________
+    dense_4 (Dense)              (None, 64)                8256      
+    _________________________________________________________________
+    dense_5 (Dense)              (None, 64)                4160      
+    _________________________________________________________________
+    dense_6 (Dense)              (None, 32)                2080      
+    _________________________________________________________________
+    dense_7 (Dense)              (None, 1)                 33        
+    =================================================================
+    Total params: 29,857
+    Trainable params: 29,857
+    Non-trainable params: 0
+    _________________________________________________________________
+
+
+```python
+# compile the model
+regressor.compile(optimizer=rms, loss='mean_squared_error',
+                   metrics =['mean_absolute_error', 'mean_squared_error'])
+```
+
+
+```python
+regressor.fit(X_train, Y_train, epochs=500, validation_split=0.2, batch_size=128)
+```
+    Train on 73216 samples, validate on 18305 samples
+    Epoch 1/500
+    73216/73216 [==============================] - 2s 29us/sample - loss: 36304.4227 - mean_absolute_error: 11.3972 - mean_squared_error: 36304.4414 - val_loss: 222.8230 - val_mean_absolute_error: 2.5017 - val_mean_squared_error: 222.8230
+    Epoch 2/500
+    73216/73216 [==============================] - 2s 23us/sample - loss: 590.6254 - mean_absolute_error: 2.8668 - mean_squared_error: 590.6252 - val_loss: 16.1485 - val_mean_absolute_error: 1.5224 - val_mean_squared_error: 16.1485
+    Epoch 3/500
+    73216/73216 [==============================] - 2s 23us/sample - loss: 136.5936 - mean_absolute_error: 1.9896 - mean_squared_error: 136.5937 - val_loss: 21.2147 - val_mean_absolute_error: 1.6377 - val_mean_squared_error: 21.2147
+    Epoch 4/500
+    73216/73216 [==============================] - 2s 22us/sample - loss: 103.9836 - mean_absolute_error: 1.5385 - mean_squared_error: 103.9836 - val_loss: 2.3227 - val_mean_absolute_error: 1.1636 - val_mean_squared_error: 2.3227
+    Epoch 5/500
+    73216/73216 [==============================] - 2s 22us/sample - loss: 78.1466 - mean_absolute_error: 1.5526 - mean_squared_error: 78.1466 - val_loss: 1.6615 - val_mean_absolute_error: 0.9808 - val_mean_squared_error: 1.6615
+    Epoch 50/500
+    73216/73216 [==============================] - 2s 22us/sample - loss: 3.4092 - mean_absolute_error: 0.9161 - mean_squared_error: 3.4092 - val_loss: 1.3815 - val_mean_absolute_error: 0.8751 - val_mean_squared_error: 1.3815
+    Epoch 100/500
+    73216/73216 [==============================] - 2s 22us/sample - loss: 1.3334 - mean_absolute_error: 0.8612 - mean_squared_error: 1.3334 - val_loss: 1.3525 - val_mean_absolute_error: 0.8787 - val_mean_squared_error: 1.3525
+    Epoch 200/500
+    73216/73216 [==============================] - 2s 22us/sample - loss: 1.3462 - mean_absolute_error: 0.8602 - mean_squared_error: 1.3462 - val_loss: 1.3354 - val_mean_absolute_error: 0.8684 - val_mean_squared_error: 1.3354
+    Epoch 300/500
+    73216/73216 [==============================] - 2s 22us/sample - loss: 1.2962 - mean_absolute_error: 0.8403 - mean_squared_error: 1.2962 - val_loss: 1.3546 - val_mean_absolute_error: 0.8503 - val_mean_squared_error: 1.3546
+    Epoch 400/500
+    73216/73216 [==============================] - 5s 68us/sample - loss: 1.4052 - mean_absolute_error: 0.8894 - mean_squared_error: 1.4052 - val_loss: 1.4551 - val_mean_absolute_error: 0.8892 - val_mean_squared_error: 1.4551
+    Epoch 500/500
+    73216/73216 [==============================] - 5s 70us/sample - loss: 2.2173 - mean_absolute_error: 0.8802 - mean_squared_error: 2.2173 - val_loss: 1.3030 - val_mean_absolute_error: 0.8503 - val_mean_squared_error: 1.3030
+
+    91521/91521 [==============================] - 3s 30us/sample - loss: 1.2497 - mean_absolute_error: 0.8416 - mean_squared_error: 1.2497
+    Training Loss: 1.2496539591773184
+    Training MAE: 0.8415788
+    Training MSE: 1.2496532
+
+    39224/39224 [==============================] - 1s 30us/sample - loss: 1.2976 - mean_absolute_error: 0.8558 - mean_squared_error: 1.2976
+    Test Loss: 1.2975662440006863
+    Test MAE: 0.85583407
+    Test MSE: 1.297566
+
+    R-squared value: 0.52284
