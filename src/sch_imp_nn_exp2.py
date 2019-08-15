@@ -4,7 +4,7 @@
 # https://github.com/akhilpandey95/scholarlyimpact/blob/master/LICENSE.
 
 import sys
-from models import PredictCitationsExist
+from models import PredictMedianCitationsExist
 from evaluation import evaluate, clf_metrics
 from data import data_processing, prepare_X_Y
 from sklearn.model_selection import train_test_split
@@ -14,13 +14,13 @@ if __name__ == '__main__':
     data = data_processing('~/Downloads/sch_impact.csv')
 
     # prepare the X, Y
-    X, Y = prepare_X_Y(data, 'target_exp_1')
+    X, Y = prepare_X_Y(data, 'target_exp_2')
 
     # build the train and test samples
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3)
 
     # build the model
-    classifier = PredictCitationsExist()
+    classifier = PredictMedianCitationsExist()
 
     # train the model
     classifier = classifier.train(10, 64, X_train, X_test, Y_train, Y_test, stopping=False)
