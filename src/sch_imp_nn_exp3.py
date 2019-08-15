@@ -5,7 +5,7 @@
 
 import sys
 from models import PredictLogCitation
-from evaluation import evaluate, metrics
+from evaluation import evaluate, reg_metrics
 from data import data_processing, prepare_X_Y
 from sklearn.model_selection import train_test_split
 
@@ -14,7 +14,7 @@ if __name__ == '__main__':
     data = data_processing('~/Downloads/sch_impact.csv')
 
     # prepare the X, Y
-    X, Y = prepare_X_Y(data)
+    X, Y = prepare_X_Y(data, 'target_exp_3')
 
     # build the train and test samples
     X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.3)
@@ -23,7 +23,7 @@ if __name__ == '__main__':
     regressor = PredictLogCitation()
 
     # train the model
-    regressor = regressor.train(10, 64, X_train, X_test, Y_train, Y_test, stopping=False)
+    regressor = regressor.train(500, 128, X_train, X_test, Y_train, Y_test, stopping=False)
 
     # evaluate and print the training stats
     model_evaluation = evaluate(regressor, 'train', x_train=X_train, y_train=Y_train)
@@ -33,14 +33,14 @@ if __name__ == '__main__':
     print('Training MAE:', model_evaluation[1])
 
     # evaluate and print the test stats
-    model_evaluation = evaluate(regressor, 'test', x_test=X_test, y_test=Y_test)
+    model_evaluation = reg_metrics(regressor, x_test=X_test, y_test=Y_test)
 
     # print test metrics
     print('Test Loss(MSE):', model_evaluation[0])
     print('Test MAE:', model_evaluation[1])
 
     # print the r-squared
-    print('R-squared:', metrics(regressor, x_test=X_test, y_test=Y_test))
+    print('R-squared:', model_evaluation[2])
 
 else:
     print('ERR: unable to run the script')
