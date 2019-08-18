@@ -2,13 +2,16 @@
 TBA
 
 # Abstract
-TBA
+Identifying highly-cited scholarly literature at an early stage is a vital endeavor to the academic research community and to other stakeholders, such as technology companies and government bodies. Due to the sheer amount of research published and the growth of ever-changing interdisciplinary areas, researchers need an effective approach to identifying important scholarly studies if they are to read or even skim all the new studies published in their respective fields. The number of citations that a given research publication has accrued has been used to help researchers in this regard. However, citations take time to occur and longer to accumulate. In this article, we used Altmetrics to predict citations that a scholarly publication could receive. We built various classification and regression models and evaluated their performance. We found that tree-based models performed best in classification. We found that Mendeley readership, publication age, post length, maximum followers, and academic status were the most important factors in predicting citations.
 
 # Data
-TBA
+The dataset used for the experiments comprises of social media and scholarly indicators for scientific articles. The size of the dataset is 130,745 and for all the experiments 70 percent was used for training and 30 percent for test. Furthermore, for all the neural network models 20 percent of the training data was used as validation. There are three target variables in the dataset respectively for the three experiments. These are :
+  - `target_exp_1`: Binary label saying if citations exist or not.
+  - `target_exp_2`: Binary label saying if existing citations are more than median number of citations or not.
+  - `target_exp_3`: Discrete values for log(1 + citation).
 
 # Methodology
-TBA
+The project comprises of three experiments. The first two experiments are classification problems while the third being a regression problem. A combination of approaches were used for solving the classification and regression problems. Neural networks, supervised learning algorithms and support vector machines were used for training the models on the data. The features used for all of the experiments were the same. While training the supervised learning models three algorithms had Randomized search and Grid search to obtain best hyper parameters for training the models. All of the supervised learning algorithms used 10 fold cross validation approach for training the models. The neural network models were implemented using TensorFlow. The supervised learning models and the support vector machine algorithms were implemented using scikit-learn.
 
 # Results
 
