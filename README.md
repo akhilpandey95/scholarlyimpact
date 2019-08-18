@@ -142,6 +142,44 @@ TBA
 | **Recall** | 0.007 |
 | **F-1** | 0.014 |
 
+### 3. Regression experiment for predicting log(1+citations)
+
+###### 3.a Optimum parameters for the Neural network
+
+| Model  | Optimum hyper parameters |
+|--------|:------------------------:|
+| **Epochs** | 500 |
+| **Batch size** | 128 |
+| **Loss Function** | mean squared error |
+| **Hidden Layers** | 7 layers <br>32, 64, 64, 128, 64, 64, 32 neurons for respective layers |
+| **Optimization function** | RMS with 0.001 learning rate |
+| **Activation function(s)** | ReLU for all layers, <br> linear activation for o/p layer |
+
+###### 3.b MSE, MAE and R-squared for the neural network
+
+| Metric  | Value |
+|---------|:-----:|
+| **Training MSE** | 1.24965 |
+| **Training MAE** | 0.84157 |
+| **Test MSE** | 1.29756 |
+| **Test MAE** | 0.85583 |
+| **Test MSE** | 0.52284 |
+
+###### 3.c MSE and R-squared for the supervised learning algorithms
+
+| Model  | Train MSE | Test MSE| R-squared |
+|--------|:---------:|:-------:|:---------:|
+| **Random Forest** | 0.26 | 1.32 | 0.512 |
+| **Decision Tree** | 1.647 | 1.663 | 0.389 |
+| **Linear** | 1.75 | 1.758 | 0.354 |
+
+###### 3.d Optimum tuning parameters for the tree based and ensemble algorithms
+
+| Model  | Optimum hyper parameters |
+|--------|:------------------------:|
+| **Random Forest** | n_estimators: 16,<br> min_samples_split: 0.4,<br> min_samples_leaf: 0.2,<br> features: 16,<br> max_depth: 24,<br> criterion: mse |
+| **Decision Tree** | min_samples_split: 0.4,<br> min_samples_leaf: 0.1,<br> max_features: 13,<br> max_depth: 32,<br> criterion: friedman mse  |
+
 # License
 [The MIT License](https://github.com/akhilpandey95/scholarlyimpact/blob/master/LICENSE)
 
