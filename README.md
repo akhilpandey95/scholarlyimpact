@@ -1,5 +1,4 @@
 # scholarlyimpact
-TBA
 
 # Abstract
 Identifying highly-cited scholarly literature at an early stage is a vital endeavor to the academic research community and to other stakeholders, such as technology companies and government bodies. Due to the sheer amount of research published and the growth of ever-changing interdisciplinary areas, researchers need an effective approach to identifying important scholarly studies if they are to read or even skim all the new studies published in their respective fields. The number of citations that a given research publication has accrued has been used to help researchers in this regard. However, citations take time to occur and longer to accumulate. In this article, we used Altmetrics to predict citations that a scholarly publication could receive. We built various classification and regression models and evaluated their performance. We found that tree-based models performed best in classification. We found that Mendeley readership, publication age, post length, maximum followers, and academic status were the most important factors in predicting citations.

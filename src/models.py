@@ -46,7 +46,7 @@ class PredictCitationsExist(Model):
         self.model = Sequential()
 
         # add the first hidden layer with 64 neurons, relu activation
-        self.model.add(Dense(512, activation='selu', input_dim=22))
+        self.model.add(Dense(512, activation='selu', input_dim=21))
 
         # add the single output layer
         self.model.add(Dense(1, activation='softmax'))
@@ -139,7 +139,7 @@ class PredictMedianCitationsExist(Model):
         self.model = Sequential()
 
         # add the first hidden layer with 64 neurons, relu activation
-        self.model.add(Dense(64, activation='sigmoid', input_dim=22))
+        self.model.add(Dense(64, activation='sigmoid', input_dim=21))
 
         # add the second hidden layer with 128 neurons, relu activation
         self.model.add(Dense(128, activation='selu'))
@@ -238,28 +238,28 @@ class PredictLogCitation(Model):
         self.model = Sequential()
 
         # add the first hidden layer with 32 neurons, relu activation
-        self.model.add(Dense(32, activation='selu', input_dim=22))
+        self.model.add(Dense(32, activation='relu', input_dim=21))
 
         # add the second hidden layer with 64 neurons, relu activation
-        self.model.add(Dense(64, activation='selu'))
+        self.model.add(Dense(64, activation='relu'))
 
         # add the third hidden layer with 64 neurons, relu activation
-        self.model.add(Dense(64, activation='selu'))
+        self.model.add(Dense(64, activation='relu'))
 
         # add the fourth hidden layer with 128 neurons, relu activation
-        self.model.add(Dense(128, activation='selu'))
+        self.model.add(Dense(128, activation='relu'))
 
         # add the fifth hidden layer with 64 neurons, relu activation
-        self.model.add(Dense(64, activation='selu'))
+        self.model.add(Dense(64, activation='relu'))
 
         # add the sixth hidden layer with 64 neurons, relu activation
-        self.model.add(Dense(64, activation='selu'))
+        self.model.add(Dense(64, activation='relu'))
 
         # add the seventh hidden layer with 32 neurons, relu activation
-        self.model.add(Dense(32, activation='selu'))
+        self.model.add(Dense(32, activation='relu'))
 
         # add the single output layer
-        self.model.add(Dense(1, activation='selu'))
+        self.model.add(Dense(1))
 
         # use the rmsprop optimizer
         self.rms = keras.optimizers.RMSprop(lr=0.001)

@@ -118,7 +118,7 @@ def prepare_X_Y(data_frame, target):
                         'Reddit', 'Twitter', 'Facebook',
                         'GooglePlus', 'PeerReviews','Wikipedia',
                         'TotalPlatforms', 'SincePublication','PlatformWithMaxMentions',
-                        'Countries', 'MaxFollowers', 'Retweets','Profession',
+                        'Countries', 'MaxFollowers','Profession',
                         'AcademicStatus', 'PostLength', 'HashTags', 'Mentions',
                         'AuthorCount']
 
@@ -131,4 +131,4 @@ def prepare_X_Y(data_frame, target):
         # return the tuple
         return X, Y
     except:
-        return np.zeros((len(data_frame), 22)), np.zeros((len(data_frame), 22))
+        return np.zeros((len(data_frame), 21)), np.zeros((len(data_frame), 21))
