@@ -16,3 +16,6 @@ tramp
 .DS_Store
 .DS_Store?
 ._*
+
+# config files
+cred.json
