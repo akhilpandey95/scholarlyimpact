@@ -11,15 +11,11 @@ import itertools
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-from ast import literal_eval
 from functools import reduce
 from dimcli.shortcuts import *
-from ratelimit import limits, sleep_and_retry
 from collections import Counter, defaultdict, ChainMap
 
 # function for initializing the dimensions cli
-
-
 def init_dimcli(credentials_file):
     """
     Login to the Dimensions API and
@@ -49,7 +45,7 @@ def init_dimcli(credentials_file):
 
             # craete a DSL object
             dsl = dimcli.Dsl()
-
+        
         # return the DSL object
         return dsl
     except:
@@ -57,8 +53,6 @@ def init_dimcli(credentials_file):
         return dimcli.core.api.Dsl
 
 # function for obtaining the altmetric id from the dump
-
-
 def parse_altmetric_id(file_object, paper_id):
     """
     Parse the altmetric_id from the file
@@ -69,7 +63,7 @@ def parse_altmetric_id(file_object, paper_id):
     arg1 | file_object: list
         The list that contains the altmetric information of all articles
     arg2 | paper_id: int
-        The paper id that is useful for extracting all of the infromation
+        The paper id that is useful for extracting all of the infromation 
         about scholarly articles from the file object
     Returns
     -------
@@ -81,8 +75,7 @@ def parse_altmetric_id(file_object, paper_id):
         paper_info = file_object[paper_id].split(',')
 
         # iterate over the list to parse the altmetric id
-        altmetric_id = [info for info in paper_info if 'altmetric_id' in info][0].strip().split(':')[
-                                                                                        1].strip()
+        altmetric_id = [info for info in paper_info if 'altmetric_id' in info][0].strip().split(':')[1].strip()
 
         # return the altmetric id
         return int(altmetric_id)
@@ -91,8 +84,6 @@ def parse_altmetric_id(file_object, paper_id):
         return int(0)
 
 # function for splitting a list into n parts
-
-
 def chunk_list(sequence, parts):
     """
     Create smaller sequences of a list
@@ -123,11 +114,9 @@ def chunk_list(sequence, parts):
     except:
         # return an empty list
         return list()
-
+    
 # function for obtaining the citations using the dimensions API
-
-
-def get_dimensions_citations(dsl_object, altmetric_id):
+def get_dimensions_citations(dsl_object, dataframe):
     """
     Use the dimensions API to obtain the citations
     for a given altmetric id associated with a scholarly article
@@ -135,106 +124,38 @@ def get_dimensions_citations(dsl_object, altmetric_id):
     ----------
     arg1 | dsl_object: dimcli.core.api.Dsl
         The DSL dimensions object used for making CRUD operations
-    arg2 | dataframe: int
-        The altmetric id of the scholarly article
+    arg2 | dataframe: pandas.core.frame.DataFrame
+        The dataframe that has information of all scholarly articles
     Returns
     -------
-    Number
-        int
+    Array
+        numpy.ndarray
     """
     try:
         # store the altmetric ids to the list
-        seed = [altmetric_id]
+        seed = dataframe.altmetric_id.values.tolist()
 
-        # use the dimcli object to query
-        data = dsl_object.query(
-            f"""search publications where altmetric_id in {json.dumps(seed)} return publications[times_cited]""")
+        # chunk the list into smaller lists due to API payload restrictions
+        seed = chunk_list(seed, 26149)
 
-        # return just the citations
-        return data.as_dataframe()['times_cited'][0]
+        # init a list for storing the citations
+        citations = []
+
+        # iterate over the batches
+        for i in range(len(seed)):
+            # use the dimcli object to query
+            data = dsl_object.query(f"""search publications where altmetric_id in {json.dumps(seed[i])} return publications[times_cited]""")
+
+            # return just the citations
+            citations.append(data.as_dataframe()['times_cited'].values.tolist())
+
+        # return the altmetric id
+        return citations
     except:
         # return a zero
-        return int(0)
-
-# function for obtaining the citations using the dimensions web url
-@sleep_and_retry
-@limits(calls=30, period=60)
-def get_dimensions_citations_web(credentials_file, altmetric_id):
-    """
-    Use the dimensions web URL and requests API to obtain the citations
-    for a given altmetric id associated with a scholarly article
-    Parameters
-    ----------
-    arg1 | credentials_file: str
-        The file name that contains dimensions credentials
-    arg2 | altmetric_id: int
-        The altmetric id of a scholarly article
-    Returns
-    -------
-    Dictionary
-        dict
-    """
-    try:
-        # use the credentials file name to obtain the account information
-        with open(credentials_file) as f:
-            # load the credentials from the file
-            credentials = json.load(f)
-
-            # fetch the username, pwd and URI from the credentials file
-            login = {
-                'username': credentials['username'],
-                'password': credentials['password']
-            }
-
-            # login to the web API
-            resp = requests.post(
-                'https://app.dimensions.ai/api/auth.json', json=login)
-
-            # make sure alerts are raised in case of failed authentication
-            resp.raise_for_status()
-
-            # Create http header using the generated token.
-            headers = {
-                'Authorization': "JWT " + resp.json()['token']
-            }
-
-            # create the query
-            query = """search publications where altmetric_id in""" + \
-                str([altmetric_id]) + \
-                    """return publications[id+doi+altmetric_id+title+times_cited+authors]"""
-
-            # Execute DSL query.
-            resp = requests.post(
-                'https://app.dimensions.ai/api/dsl.json',
-                data=query.encode(),
-                headers=headers)
-
-            # check for 200 status
-            if resp.status_code == 200 and 'publications' in resp.json() \
-               and len(resp.json()['publications']) > 0:
-                # just obtain the first author
-                response = copy.deepcopy(resp.json()['publications'][0])
-
-                # set the first name
-                response['first_name'] = response['authors'][0]['first_name'] \
-                                        + ' ' + \
-                                            response['authors'][0]['last_name']
-
-                # remove the authors key
-                del response['authors']
-
-                # return the final dict
-                return response
-            else:
-                # return the json
-                return resp.json()
-    except:
-        # return a empty dict
-        return dict()
-
+        return numpy.zeros(len(dataframe))    
+    
 # function for extracting the altmetric id's from the dump
-
-
 def db_dump_process(dump_fname, data_fname, dsl_object):
     """
     Read the db dump containing information about
@@ -264,11 +185,20 @@ def db_dump_process(dump_fname, data_fname, dsl_object):
         paper_ids = data.paperid.values.tolist()
 
         # parse the altmetric ids from the dump
-        list_of_altmetric_ids = [parse_altmetric_id(
-            file_dump, paper_id) for paper_id in tqdm(paper_ids)]
+        list_of_altmetric_ids = [parse_altmetric_id(file_dump, paper_id) for paper_id in tqdm(paper_ids)]
 
         # add the altmetric id from the dump to the dataframe
-        data = data.assign(altmetric_id=list_of_altmetric_ids)
+        data = data.assign(altmetric_id = list_of_altmetric_ids)
+
+        # parse the citations with altmetric id
+        citations = get_dimensions_citations(dsl_object, data)
+
+        # add the citations column to the dataframe
+        #data = data.assign(citations_dimensions = citations)
+        citations = list(itertools.chain.from_iterable(citations))
+
+        # print the number of scholarly articles that have dimensions citations
+        print("Total articles with citations: ", len(citations))
 
         # return the dataframe
         return data
@@ -278,25 +208,12 @@ def db_dump_process(dump_fname, data_fname, dsl_object):
 
 if __name__ == '__main__':
     # run the init function
-    dsl=init_dimcli('cred.json')
+    dsl = init_dimcli('cred.json')
 
     #  run the db dump process function
-    data=db_dump_process('/media/hector/data/datasets/db2.csv',
-                         '/media/hector/data/datasets/sch_impact.csv', dsl)
-
-    ids = data.altmetric_id.values.tolist()
-    
-    # apply the citation extraction script on a smaller set
-    citations = list(map(lambda x: get_dimensions_citations_web('cred.json', x), tqdm(ids[:90])))
-
-    # add the citations column to the dataframe
-    # # data = data.assign(citations_dimensions = citations)
-    # # citations = list(itertools.chain.from_iterable(citations))
-
-    # # print the number of scholarly articles that have dimensions citations
-    c = list(map(lambda x: x['times_cited'] if 'times_cited' in x else 0, citations))
-    c = list(filter(lambda x: x > 0, c))
-    print(c[:10])
+    data = db_dump_process('/media/hector/data/datasets/db2.csv', '/media/hector/data/datasets/sch_impact.csv', dsl)
 
     # extract the citations
-    # print(data[['altmetric_id', 'citations', 'citations_dimensions']].head())
+    #print(data[['altmetric_id', 'citations', 'citations_dimensions']].head())
+
+    
