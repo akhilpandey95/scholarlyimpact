@@ -17,6 +17,25 @@ from dimcli.shortcuts import *
 from ratelimit import limits, sleep_and_retry
 from collections import Counter, defaultdict, ChainMap
 
+# class definition for Rate limiting
+
+
+class RateLimiter:
+    def __init__(self, maxRate=5, timeUnit=1):
+        self.timeUnit = timeUnit
+        self.deque = deque(maxlen=maxRate)
+
+    def __call__(self):
+        if self.deque.maxlen == len(self.deque):
+            cTime = time.time()
+            if cTime - self.deque[0] > self.timeUnit:
+                self.deque.append(cTime)
+                return False
+            else:
+                return True
+        self.deque.append(time.time())
+        return False
+
 # function for initializing the dimensions cli
 
 
@@ -277,26 +296,36 @@ def db_dump_process(dump_fname, data_fname, dsl_object):
         return pd.DataFrame()
 
 if __name__ == '__main__':
-    # run the init function
-    dsl=init_dimcli('cred.json')
+    # get the login headers for dimensions web API
+    headers = dimensions_login('cred.json')
 
-    #  run the db dump process function
-    data=db_dump_process('/media/hector/data/datasets/db2.csv',
-                         '/media/hector/data/datasets/sch_impact.csv', dsl)
+    # call the rate limiter object
+    r = RateLimiter()
 
-    ids = data.altmetric_id.values.tolist()
+    # iterate over the length
+    length_of_file = len(open('altmetric_ids.txt').readlines())
+
+    # place the contents of the list into a file
+    alt_list = open('altmetric_ids.txt').readlines()
+
+    # iterate over the length of the file
+    # write the results to a file
+    for i in tqdm(range(length_of_file)):
+        time.sleep(1.75)
+        if not r():
+            alt_info = open('altmetric_ids.txt', 'r+')
+            cit_info = open('citations_dim.csv', 'a')
+            cit_info.write(str(alt_list[i].strip(
+            )) + ',' + str(get_dimensions_citations_web(headers, int(alt_list[i].strip()))))
+            cit_info.write('\n')
+            cit_info.close()
+            alt_info.seek(0)
+            alt_info.truncate()
+            alt_info.writelines(alt_list[i+1:])
+            alt_info.close()
+        else:
+            pass
+
+    # print the remaining number of files
+    print(length_of_file)
     
-    # apply the citation extraction script on a smaller set
-    citations = list(map(lambda x: get_dimensions_citations_web('cred.json', x), tqdm(ids[:90])))
-
-    # add the citations column to the dataframe
-    # # data = data.assign(citations_dimensions = citations)
-    # # citations = list(itertools.chain.from_iterable(citations))
-
-    # # print the number of scholarly articles that have dimensions citations
-    c = list(map(lambda x: x['times_cited'] if 'times_cited' in x else 0, citations))
-    c = list(filter(lambda x: x > 0, c))
-    print(c[:10])
-
-    # extract the citations
-    # print(data[['altmetric_id', 'citations', 'citations_dimensions']].head())
