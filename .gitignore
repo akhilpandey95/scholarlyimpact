@@ -19,3 +19,7 @@ tramp
 
 # config files
 cred.json
+
+# scripts directory
+scripts/*.txt
+scripts/*.csv
