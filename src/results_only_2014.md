@@ -4,25 +4,24 @@
 
 | Model  | Optimum hyper parameters |
 |--------|:------------------------:|
-| **Epochs** |  |
-| **Batch size** |  |
-| **Loss Function** |  |
-| **Hidden Layers** |  |
+| **Epochs** | 100 |
+| **Batch size** | 32 |
+| **Loss Function** | binary_crossentropy |
+| **Hidden Layers** | 2 {512, 512} |
 | **Optimization function** | RMS with 0.001 learning  |
-| **Activation function(s)** |  |
+| **Activation function(s)** | selu for hidden layers, <br> softmax for output layer |
 
 ###### 1.b Accuracy, Precision, Recall and F-1 for the neural network
 
 | Metric  | Value |
 |---------|:-----:|
-| **Training Loss** |  |
-| **Training Accuracy** |  |
-| **Validation Loss** |  |
-| **Validation Accuracy** |  |
-| **Test Accuracy** |  |
-| **Precision** |  |
-| **Recall** |  |
-| **F-1** | |
+| **Training Loss** | 2.0129842191353062 |
+| **Training Accuracy** | 0.86875063 |
+| **Test Loss** | 2.0243058100990625 |
+| **Test Accuracy** | 0.8680124 |
+| **Precision** | 0.8680124 |
+| **Recall** | 0.8680124 |
+| **F-1** | 0.8680124282836914 |
 
 ###### 1.c Accuracy, Precision, Recall and F-1 for the supervised learning algorithms
 
@@ -70,25 +69,24 @@
 
 | Model  | Optimum hyper parameters |
 |--------|:------------------------:|
-| **Epochs** |  |
-| **Batch size** |  |
-| **Loss Function** |  |
-| **Hidden Layers** |  |
+| **Epochs** | 100 |
+| **Batch size** | 32 |
+| **Loss Function** | binary_crossentropy |
+| **Hidden Layers** | 3 {64, 128, 64} |
 | **Optimization function** | RMS with 0.001 learning rate |
-| **Activation function(s)** |  |
+| **Activation function(s)** | elu for hidden layers, <br> softmax for output layer |
 
 ###### 2.b Accuracy, Precision, Recall and F-1 for the neural network
 
 | Metric  | Value |
 |---------|:-----:|
-| **Training Loss** |  |
-| **Training Accuracy** |  |
-| **Validation Loss** |  |
-| **Validation Accuracy** |  |
-| **Test Accuracy** |  |
-| **Precision** |  |
-| **Recall** |  |
-| **F-1** |  |
+| **Training Loss** | 0.437495032322313 |
+| **Training Accuracy** | 0.7992428 |
+| **Test Loss** | 0.5105127806989302 |
+| **Test Accuracy** | 0.7802795 |
+| **Precision** | 0.7802795 |
+| **Recall** | 0.7802795 |
+| **F-1** | 0.7802795171737671 |
 
 ###### 2.c Accuracy, Precision, Recall and F-1 for the supervised learning algorithms
 
@@ -136,22 +134,20 @@
 
 | Model  | Optimum hyper parameters |
 |--------|:------------------------:|
-| **Epochs** |  |
-| **Batch size** |  |
-| **Loss Function** |  |
-| **Hidden Layers** |  |
+| **Epochs** | 500 |
+| **Batch size** | 32 |
+| **Loss Function** | mean_squared_error |
+| **Hidden Layers** | 7 {32, 64, 64, 128, 64, 64, 32} |
 | **Optimization function** | RMS with 0.001 learning rate |
-| **Activation function(s)** |  |
+| **Activation function(s)** | rELU for hidden layers, <br> linear activation for output layer |
 
 ###### 3.b MSE, MAE and R-squared for the neural network
 
 | Metric  | Value |
 |---------|:-----:|
-| **Training MSE** |  |
-| **Training MAE** |  |
-| **Test MSE** |  |
-| **Test MAE** |  |
-| **Test MSE** |  |
+| **Training MSE** | 1.1778095 |
+| **Test MSE** | 1.4398558 |
+| **R-squared** | 0.44590104 |
 
 ###### 3.c MSE and R-squared for the supervised learning algorithms
 
