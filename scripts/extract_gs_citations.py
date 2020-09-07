@@ -63,15 +63,22 @@ def get_gs_citations_web(title):
     Dictionary
         dict
     """
-    try:
-        # make the query
-        query = scholarly.search_pubs(title)
+    while True:
+        try:
+            # call the lumproxy object
+            scholarly.use_lum_proxy()
 
-        # return the response dict
-        return next(query)
-    except:
-        # return empty dict
-        return dict()
+            # make the query
+            query = scholarly.search_pubs(title)
+
+            # come out
+            break
+        except Exception as e:
+            # come out and try again
+            break
+
+    # return the response dict
+    return next(query)
 
 # function for assigning new IP address
 def assign_new_ip(text=False):
@@ -114,6 +121,39 @@ def assign_new_ip(text=False):
             return False
     except:
         return False
+
+# function for assigning a new proxy
+def set_new_proxy(text=True):
+    """
+    Reset the identity using FreeProxy
+    Parameters
+    ----------
+    arg1 [OPTIONAL]| text: bool
+        A boolean flag to return the IP address tuple (old, morphed)
+    Returns
+    -------
+    Address
+        fp.fp.FreeProxy
+    """
+    while True:
+        # call the freeproxy object
+        proxy = FreeProxy(rand=True, timeout=1).get()
+
+        # allocate the proxy address to scholarly
+        proxy_works = scholarly.use_proxy(http=proxy, https=proxy)
+
+        # check it the ip address works
+        if proxy_works:
+            # come out
+            break
+
+    # print the ip address depending on the text argument
+    if text:
+        # print the working ip
+        print("Working proxy:", proxy)
+
+    # return the proxy details
+    return proxy
 
 # function for connecting tor to scholarly
 def scholarly_init_connection():
