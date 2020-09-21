@@ -159,5 +159,3 @@ if __name__ == '__main__':
             alt_info.close()
         else:
             pass
-
-
